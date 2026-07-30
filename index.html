@@ -636,3 +636,43 @@
                         <button type="submit" class="btn btn-secondary"><i data-lucide="plus"></i> Add</button>
                     </form>
 
+                    <div id="subtaskList" class="subtasks-list">
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary closeModalBtn">Close</button>
+            </div>
+        </div>
+    </div>
+
+    
+    <div id="projectModal" class="modal-backdrop hidden">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3 id="projectModalTitle">Create New Project</h3>
+                <button class="icon-btn closeModalBtn" aria-label="Close Modal"><i data-lucide="x"></i></button>
+            </div>
+            <form id="projectForm" class="modal-body">
+                <input type="hidden" id="projectIdInput">
+                <div class="form-group">
+                    <label for="projectNameInput">Project Name *</label>
+                    <input type="text" id="projectNameInput" class="form-control" placeholder="e.g. Mobile App Redesign" required>
+                </div>
+                <div class="form-group">
+                    <label for="projectDescInput">Description</label>
+                    <textarea id="projectDescInput" class="form-control" rows="3" placeholder="Project overview..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="projectDeadlineInput">Deadline Date *</label>
+                    <input type="date" id="projectDeadlineInput" class="form-control" required>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary closeModalBtn">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Project</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
