@@ -417,3 +417,52 @@
                                     <span>Completed</span>
                                 </div>
                             </div>
+                        </div>
+
+                        <div class="card profile-edit-card">
+                            <h3>Edit Profile Information</h3>
+                            <form id="profileForm">
+                                <div class="form-group">
+                                    <label for="profileNameInput">Full Name</label>
+                                    <input type="text" id="profileNameInput" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="profileRoleInput">Role / Position</label>
+                                    <input type="text" id="profileRoleInput" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="profileEmailInput">Email Address</label>
+                                    <input type="email" id="profileEmailInput" class="form-control" required>
+                                </div>
+                                <div class="form-actions">
+                                    <button type="submit" class="btn btn-primary">Save Profile Changes</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+
+                
+                <section id="settings-view" class="view-section">
+                    <div class="page-header">
+                        <div>
+                            <h1 class="page-title">Settings</h1>
+                            <p class="page-subtitle">Application preferences and storage controls.</p>
+                        </div>
+                    </div>
+
+                    <div class="settings-grid">
+                        <div class="card settings-card">
+                            <h3>Appearance Settings</h3>
+                            <div class="setting-item">
+                                <div>
+                                    <strong>Dark Mode</strong>
+                                    <p>Toggle dark / light color interface theme</p>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" id="settingsDarkModeToggle">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
+
