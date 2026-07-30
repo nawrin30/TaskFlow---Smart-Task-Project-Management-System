@@ -566,3 +566,33 @@
                     </div>
                 </div>
 
+<div class="form-row">
+                    <div class="form-group">
+                        <label for="taskStartTimeInput">Start Time</label>
+                        <input type="time" id="taskStartTimeInput" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="taskEndTimeInput">End Time</label>
+                        <input type="time" id="taskEndTimeInput" class="form-control">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="taskAssignedSelect">Assign Team Members</label>
+                    <select id="taskAssignedSelect" class="form-control" multiple style="height: 80px;"></select>
+                    <small class="form-help">Hold Ctrl/Cmd to select multiple members</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="taskLinkInput">Reference Link</label>
+                    <input type="url" id="taskLinkInput" class="form-control" placeholder="https://">
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary closeModalBtn">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="saveTaskBtn">Save Task</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
