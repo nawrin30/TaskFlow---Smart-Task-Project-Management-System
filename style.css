@@ -34,3 +34,31 @@
     --sidebar-collapsed-width: 80px;
     --topbar-height: 70px;
 }
+
+[data-theme="dark"] {
+    --bg-main: #0b0f17;
+    --bg-surface: #151c28;
+    --bg-sidebar: #111722;
+    --border-color: #222d3d;
+    
+    --text-main: #f1f5f9;
+    --text-muted: #94a3b8;
+    
+    --primary-light: rgba(139, 92, 246, 0.15);
+}
+
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    line-height: 1.5;
+    overflow-x: hidden;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
