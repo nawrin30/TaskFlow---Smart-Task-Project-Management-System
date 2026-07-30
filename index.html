@@ -617,3 +617,22 @@
                     <div><strong>Time Window:</strong> <span id="detailTimeWindow">-</span></div>
                     <div><strong>Link:</strong> <span id="detailLink">-</span></div>
                 </div>
+                <div class="detail-assignees">
+                    <strong>Assigned Members:</strong>
+                    <div id="detailAssignedList" class="avatar-group-list"></div>
+                </div>
+  <hr class="modal-divider">
+   <div class="subtasks-section">
+                    <div class="subtasks-header">
+                        <h3>Subtasks (<span id="subtaskProgressText">0/0</span>)</h3>
+                        <span id="subtaskPercentText" class="progress-percent-label">0%</span>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div id="subtaskProgressBar" class="progress-bar-fill" style="width: 0%;"></div>
+                    </div>
+
+                    <form id="addSubtaskForm" class="subtask-input-row">
+                        <input type="text" id="subtaskTitleInput" class="form-control" placeholder="Add a new subtask step..." required>
+                        <button type="submit" class="btn btn-secondary"><i data-lucide="plus"></i> Add</button>
+                    </form>
+
