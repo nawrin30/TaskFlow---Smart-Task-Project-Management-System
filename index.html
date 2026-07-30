@@ -596,3 +596,24 @@
         </div>
     </div>
 
+    <div id="taskDetailModal" class="modal-backdrop hidden">
+        <div class="modal-container large">
+            <div class="modal-header">
+                <div class="detail-modal-badges">
+                    <span id="detailPriorityBadge" class="badge">Priority</span>
+                    <span id="detailStatusBadge" class="badge">Status</span>
+                </div>
+                <button class="icon-btn closeModalBtn" aria-label="Close Modal"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body">
+                <h2 id="detailTaskTitle" class="detail-title">Task Details</h2>
+                <p id="detailTaskDesc" class="detail-desc">Description text...</p>
+
+                <div class="detail-meta-grid">
+                    <div><strong>Project:</strong> <span id="detailProject">-</span></div>
+                    <div><strong>Category:</strong> <span id="detailCategory">-</span></div>
+                    <div><strong>Start Date:</strong> <span id="detailStartDate">-</span></div>
+                    <div><strong>Due Date:</strong> <span id="detailDueDate">-</span></div>
+                    <div><strong>Time Window:</strong> <span id="detailTimeWindow">-</span></div>
+                    <div><strong>Link:</strong> <span id="detailLink">-</span></div>
+                </div>
