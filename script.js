@@ -60,4 +60,62 @@
     };
 
 
+    let tasks = JSON.parse(localStorage.getItem('tf_tasks')) || DEFAULT_TASKS;
+    let projects = JSON.parse(localStorage.getItem('tf_projects')) || DEFAULT_PROJECTS;
+    let teamMembers = JSON.parse(localStorage.getItem('tf_members')) || DEFAULT_MEMBERS;
+    let notifications = JSON.parse(localStorage.getItem('tf_notifications')) || [
+        { id: 'notif-1', title: 'System initialized', time: 'Just now', read: false }
+    ];
+    let userProfile = JSON.parse(localStorage.getItem('tf_user')) || DEFAULT_USER;
+    let theme = localStorage.getItem('tf_theme') || 'light';
+
+    let currentCalendarDate = new Date();
+    let selectedCalendarDay = new Date().toISOString().split('T')[0];
+    let activeTaskForDetails = null;
+
+    let statusChartInstance = null;
+    let priorityChartInstance = null;
+
+    function saveState() {
+        localStorage.setItem('tf_tasks', JSON.stringify(tasks));
+        localStorage.setItem('tf_projects', JSON.stringify(projects));
+        localStorage.setItem('tf_members', JSON.stringify(teamMembers));
+        localStorage.setItem('tf_notifications', JSON.stringify(notifications));
+        localStorage.setItem('tf_user', JSON.stringify(userProfile));
+        localStorage.setItem('tf_theme', theme);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        applyTheme(theme);
+        initNavigation();
+        initEventListeners();
+        populateSelectDropdowns();
+        renderAllViews();
+        if (window.lucide) lucide.createIcons();
+    });
+
+    function applyTheme(newTheme) {
+        theme = newTheme;
+        document.documentElement.setAttribute('data-theme', theme);
+        const icon = document.getElementById('themeIcon');
+        if (icon) {
+            icon.setAttribute('data-lucide', theme === 'dark' ? 'sun' : 'moon');
+            if (window.lucide) lucide.createIcons();
+        }
+        const toggle = document.getElementById('settingsDarkModeToggle');
+        if (toggle) toggle.checked = theme === 'dark';
+        saveState();
+    }
+
+    function initNavigation() {
+        const navLinks = document.querySelectorAll('[data-view]');
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetView = link.getAttribute('data-view');
+                switchView(targetView);
+            });
+        });
+
+
 
