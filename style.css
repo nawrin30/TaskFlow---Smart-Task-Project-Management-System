@@ -209,3 +209,36 @@ hr {
 .user-name { font-weight: 700; font-size: 0.875rem; }
 .user-role { font-size: 0.75rem; color: var(--text-muted); }
 
+.main-wrapper {
+    flex: 1;
+    margin-left: var(--sidebar-width);
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    transition: margin-left 0.3s ease;
+}
+
+.sidebar.collapsed ~ .main-wrapper {
+    margin-left: var(--sidebar-collapsed-width);
+}
+
+.top-header {
+    height: var(--topbar-height);
+    background-color: var(--bg-surface);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 90;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex: 1;
+    max-width: 450px;
+}
