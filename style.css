@@ -584,3 +584,23 @@ hr {
     transition: var(--transition);
 }
 
+.task-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+
+.task-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+
+.task-checkbox-title {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+}
+
+.task-checkbox-title h4 {
+    font-size: 1rem;
+    cursor: pointer;
+}
+
