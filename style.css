@@ -695,3 +695,17 @@ hr {
 .cal-day.active { background: var(--primary-light); border-color: var(--primary); }
 .cal-day-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--primary); margin-top: 4px; }
 
+.analytics-metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.metric-card { background: var(--bg-surface); border: 1px solid var(--border-color); padding: 1.5rem; border-radius: var(--radius-lg); }
+.metric-title { font-size: 0.85rem; color: var(--text-muted); }
+.metric-value { font-size: 1.8rem; margin-top: 0.5rem; }
+
+.charts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 1.5rem; }
+.chart-wrapper { position: relative; height: 260px; margin-top: 1rem; }
+
