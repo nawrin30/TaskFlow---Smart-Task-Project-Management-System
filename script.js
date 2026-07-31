@@ -968,6 +968,174 @@
         updateUserProfileUI();
         showToast('Profile information updated', 'success');
     });
+    
+    function populateSelectDropdowns() {
+        
+        const projSelect = document.getElementById('taskProjectSelect');
+        const filterProjSelect = document.getElementById('filterProject');
+
+        const projOptions = projects.map(p => `<option value="${p.id}">${escapeHTML(p.name)}</option>`).join('');
+
+        if (projSelect) projSelect.innerHTML = `<option value="">None</option>` + projOptions;
+        if (filterProjSelect) filterProjSelect.innerHTML = `<option value="all">All Projects</option>` + projOptions;
+
+        
+        const assignSelect = document.getElementById('taskAssignedSelect');
+        if (assignSelect) {
+            assignSelect.innerHTML = teamMembers.map(m => `<option value="${m.id}">${escapeHTML(m.name)} (${escapeHTML(m.role)})</option>`).join('');
+        }
+    }
+
+    function showToast(message, type = 'success') {
+        const container = document.getElementById('toastContainer');
+        if (!container) return;
+
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        toast.innerHTML = `<span>${escapeHTML(message)}</span>`;
+
+        container.appendChild(toast);
+        setTimeout(() => toast.remove(), 3500);
+    }
+
+    function openConfirmModal(title, message, onConfirm) {
+        const modal = document.getElementById('confirmModal');
+        document.getElementById('confirmModalTitle').textContent = title;
+        document.getElementById('confirmModalMessage').textContent = message;
+
+        const btn = document.getElementById('confirmModalActionBtn');
+        const newBtn = btn.cloneNode(true);
+        btn.parentNode.replaceChild(newBtn, btn);
+
+        newBtn.addEventListener('click', () => {
+            onConfirm();
+            closeModals();
+        });
+
+        modal.classList.remove('hidden');
+    }
+
+    function closeModals() {
+        document.querySelectorAll('.modal-backdrop').forEach(m => m.classList.add('hidden'));
+    }
+
+    function escapeHTML(str) {
+        return (str || '').replace(/[&<>'"]/g, 
+            tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
+        );
+    }
+
+    
+    function initEventListeners() {
+        
+        document.getElementById('sidebarToggleBtn')?.addEventListener('click', () => {
+            document.getElementById('sidebar').classList.toggle('collapsed');
+        });
+
+        document.getElementById('mobileMenuBtn')?.addEventListener('click', () => {
+            document.getElementById('sidebar').classList.add('mobile-open');
+        });
+
+        
+        document.getElementById('themeToggleBtn')?.addEventListener('click', () => {
+            applyTheme(theme === 'dark' ? 'light' : 'dark');
+        });
+
+        document.getElementById('settingsDarkModeToggle')?.addEventListener('change', (e) => {
+            applyTheme(e.target.checked ? 'dark' : 'light');
+        });
+
+        
+        document.getElementById('globalSearchInput')?.addEventListener('input', () => {
+            renderTasks();
+        });
+
+        
+        document.getElementById('filterStatus')?.addEventListener('change', renderTasks);
+        document.getElementById('filterPriority')?.addEventListener('change', renderTasks);
+        document.getElementById('filterProject')?.addEventListener('change', renderTasks);
+        document.getElementById('sortBy')?.addEventListener('change', renderTasks);
+
+        
+        document.getElementById('calPrevBtn')?.addEventListener('click', () => {
+            currentCalendarDate.setMonth(currentCalendarDate.getMonth() - 1);
+            renderCalendar();
+        });
+
+        document.getElementById('calNextBtn')?.addEventListener('click', () => {
+            currentCalendarDate.setMonth(currentCalendarDate.getMonth() + 1);
+            renderCalendar();
+        });
+
+        document.getElementById('calTodayBtn')?.addEventListener('click', () => {
+            currentCalendarDate = new Date();
+            selectedCalendarDay = new Date().toISOString().split('T')[0];
+            renderCalendar();
+        });
+
+       
+        document.getElementById('notificationsMenuBtn')?.addEventListener('click', () => {
+            document.getElementById('notificationDropdown').classList.toggle('hidden');
+        });
+
+        document.getElementById('markAllReadBtn')?.addEventListener('click', () => {
+            notifications.forEach(n => n.read = true);
+            saveState();
+            renderNotifications();
+        });
+
+        document.getElementById('pageMarkAllReadBtn')?.addEventListener('click', () => {
+            notifications.forEach(n => n.read = true);
+            saveState();
+            renderNotifications();
+        });
+
+        document.getElementById('pageClearAllNotificationsBtn')?.addEventListener('click', () => {
+            notifications = [];
+            saveState();
+            renderNotifications();
+        });
+
+        
+        document.getElementById('profileMenuBtn')?.addEventListener('click', () => {
+            document.getElementById('profileDropdown').classList.toggle('hidden');
+        });
+
+      
+        document.querySelectorAll('.closeModalBtn').forEach(btn => {
+            btn.addEventListener('click', closeModals);
+        });
+
+        document.querySelectorAll('.modal-backdrop').forEach(backdrop => {
+            backdrop.addEventListener('click', (e) => {
+                if (e.target === backdrop) closeModals();
+            });
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModals();
+        });
+
+        
+        document.querySelectorAll('.open-task-modal-btn').forEach(btn => {
+            btn.addEventListener('click', () => openTaskFormModal());
+        });
+
+       
+        document.getElementById('openProjectModalBtn')?.addEventListener('click', () => openProjectModal());
+        document.getElementById('openTeamModalBtn')?.addEventListener('click', () => openTeamModal());
+
+       
+        document.getElementById('resetDataBtn')?.addEventListener('click', () => {
+            openConfirmModal('Reset All Application Data', 'This will wipe all custom storage data and reload seed defaults.', () => {
+                localStorage.clear();
+                location.reload();
+            });
+        });
+    }
+
+})();
+
 
 
 
