@@ -536,3 +536,22 @@ hr {
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
 }
+.toolbar-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 1rem 1.5rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.filter-group, .sort-group {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
