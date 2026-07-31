@@ -831,6 +831,143 @@
                 </div>
             `;
         }
+        grid.innerHTML = daysHTML;
+
+        grid.querySelectorAll('.cal-day[data-date]').forEach(cell => {
+            cell.addEventListener('click', () => {
+                selectedCalendarDay = cell.getAttribute('data-date');
+                renderCalendar();
+                renderSelectedDateTasks();
+            });
+        });
+
+        renderSelectedDateTasks();
+    }
+
+    function renderSelectedDateTasks() {
+        const header = document.getElementById('selectedDateHeader');
+        const list = document.getElementById('selectedDateTaskList');
+        if (!header || !list) return;
+
+        header.textContent = `Tasks for ${selectedCalendarDay}`;
+
+        const dayTasks = tasks.filter(t => t.dueDate === selectedCalendarDay);
+        if (dayTasks.length === 0) {
+            list.innerHTML = '<p style="color:var(--text-muted);">No tasks scheduled for this date.</p>';
+            return;
+        }
+
+        list.innerHTML = dayTasks.map(t => createTaskCardHTML(t)).join('');
+        attachTaskCardListeners(list);
+    }
+
+    function renderAnalyticsMetrics() {
+        const total = tasks.length;
+        const completed = tasks.filter(t => t.status === 'Completed').length;
+        const pending = total - completed;
+        
+        const now = new Date().toISOString().split('T')[0];
+        const overdue = tasks.filter(t => t.status !== 'Completed' && t.dueDate < now).length;
+
+        const rate = total ? Math.round((completed / total) * 100) : 0;
+        const overdueRate = total ? Math.round((overdue / total) * 100) : 0;
+
+        const rateEl = document.getElementById('analyticCompletionRate');
+        if (rateEl) rateEl.textContent = `${rate}%`;
+        
+        const compEl = document.getElementById('analyticTasksCompleted');
+        if (compEl) compEl.textContent = completed;
+
+        const pendEl = document.getElementById('analyticTasksPending');
+        if (pendEl) pendEl.textContent = pending;
+
+        const overEl = document.getElementById('analyticOverdueRate');
+        if (overEl) overEl.textContent = `${overdueRate}%`;
+    }
+
+    function renderAnalyticsCharts() {
+        if (typeof Chart === 'undefined') return;
+
+        const statusCtx = document.getElementById('statusChart')?.getContext('2d');
+        const priorityCtx = document.getElementById('priorityChart')?.getContext('2d');
+
+        const todoCount = tasks.filter(t => t.status === 'To Do').length;
+        const inProgCount = tasks.filter(t => t.status === 'In Progress').length;
+        const compCount = tasks.filter(t => t.status === 'Completed').length;
+
+        const highCount = tasks.filter(t => t.priority === 'High').length;
+        const medCount = tasks.filter(t => t.priority === 'Medium').length;
+        const lowCount = tasks.filter(t => t.priority === 'Low').length;
+
+        if (statusChartInstance) statusChartInstance.destroy();
+        if (priorityChartInstance) priorityChartInstance.destroy();
+
+        if (statusCtx) {
+            statusChartInstance = new Chart(statusCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['To Do', 'In Progress', 'Completed'],
+                    datasets: [{
+                        data: [todoCount, inProgCount, compCount],
+                        backgroundColor: ['#64748b', '#2563eb', '#16a34a']
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+        }
+
+        if (priorityCtx) {
+            priorityChartInstance = new Chart(priorityCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Low', 'Medium', 'High'],
+                    datasets: [{
+                        label: 'Tasks Count',
+                        data: [lowCount, medCount, highCount],
+                        backgroundColor: ['#10b981', '#f59e0b', '#ef4444']
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+        }
+    }
+
+    
+    function updateUserProfileUI() {
+        document.getElementById('sidebarUserName').textContent = userProfile.name;
+        document.getElementById('sidebarUserRole').textContent = userProfile.role;
+        document.getElementById('sidebarAvatar').textContent = userProfile.name.charAt(0);
+        
+        document.getElementById('headerAvatar').textContent = userProfile.name.charAt(0);
+        document.getElementById('menuUserName').textContent = userProfile.name;
+        document.getElementById('menuUserEmail').textContent = userProfile.email;
+
+        document.getElementById('welcomeUserName').textContent = userProfile.name;
+
+      
+        document.getElementById('profilePageName').textContent = userProfile.name;
+        document.getElementById('profilePageRole').textContent = userProfile.role;
+        document.getElementById('profilePageEmail').textContent = userProfile.email;
+        document.getElementById('profilePageAvatar').textContent = userProfile.name.charAt(0);
+
+        document.getElementById('profileNameInput').value = userProfile.name;
+        document.getElementById('profileRoleInput').value = userProfile.role;
+        document.getElementById('profileEmailInput').value = userProfile.email;
+
+        document.getElementById('profileTotalTasks').textContent = tasks.length;
+        document.getElementById('profileCompletedTasks').textContent = tasks.filter(t => t.status === 'Completed').length;
+    }
+
+    document.getElementById('profileForm')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        userProfile.name = document.getElementById('profileNameInput').value.trim();
+        userProfile.role = document.getElementById('profileRoleInput').value.trim();
+        userProfile.email = document.getElementById('profileEmailInput').value.trim();
+
+        saveState();
+        updateUserProfileUI();
+        showToast('Profile information updated', 'success');
+    });
 
 
 
