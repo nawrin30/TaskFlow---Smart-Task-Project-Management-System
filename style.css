@@ -313,3 +313,37 @@ hr {
     cursor: pointer;
 }
 
+.notification-wrapper, .profile-wrapper { position: relative; }
+
+.dropdown-panel {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    width: 320px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+}
+
+.dropdown-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.dropdown-user-info { padding: 1rem; }
+
+.dropdown-item {
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--text-main);
+    font-size: 0.875rem;
+}
