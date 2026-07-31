@@ -679,5 +679,158 @@
     }
 
 
+    document.getElementById('projectForm')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const id = document.getElementById('projectIdInput').value;
+        const name = document.getElementById('projectNameInput').value.trim();
+        const deadline = document.getElementById('projectDeadlineInput').value;
+
+        if (id) {
+            const p = projects.find(x => x.id === id);
+            if (p) {
+                p.name = name;
+                p.description = document.getElementById('projectDescInput').value;
+                p.deadline = deadline;
+            }
+            showToast('Project updated', 'success');
+        } else {
+            projects.push({
+                id: 'proj-' + Date.now(),
+                name,
+                description: document.getElementById('projectDescInput').value,
+                deadline
+            });
+            createNotification(`New project created: "${name}"`);
+            showToast('Project created', 'success');
+        }
+
+        saveState();
+        renderAllViews();
+        closeModals();
+    });
+
+    function renderTeam() {
+        const container = document.getElementById('teamMembersContainer');
+        if (!container) return;
+
+        container.innerHTML = teamMembers.map(m => {
+            const assignedCount = tasks.filter(t => (t.assignedMembers || []).includes(m.id)).length;
+
+            return `
+                <div class="team-card">
+                    <div class="user-avatar huge">${m.name.charAt(0)}</div>
+                    <h3>${escapeHTML(m.name)}</h3>
+                    <p style="font-size:0.85rem; color:var(--text-muted);">${escapeHTML(m.role)}</p>
+                    <span class="badge" style="background:var(--primary-light); color:var(--primary);">${escapeHTML(m.email)}</span>
+                    <div style="margin-top:0.5rem; font-size:0.8rem; color:var(--text-muted);">
+                        Assigned Tasks: <strong>${assignedCount}</strong>
+                    </div>
+                    <div class="task-actions" style="margin-top:0.5rem;">
+                        <button class="icon-btn edit-mem-btn" data-id="${m.id}"><i data-lucide="edit-3"></i></button>
+                        <button class="icon-btn delete-mem-btn" data-id="${m.id}"><i data-lucide="trash-2"></i></button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        container.querySelectorAll('.edit-mem-btn').forEach(btn => {
+            btn.addEventListener('click', () => openTeamModal(btn.getAttribute('data-id')));
+        });
+
+        container.querySelectorAll('.delete-mem-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const id = btn.getAttribute('data-id');
+                openConfirmModal('Delete Team Member', 'Are you sure you want to remove this member?', () => {
+                    teamMembers = teamMembers.filter(x => x.id !== id);
+                    saveState();
+                    renderAllViews();
+                    showToast('Team member removed', 'danger');
+                });
+            });
+        });
+
+        if (window.lucide) lucide.createIcons();
+    }
+
+    function openTeamModal(memberId = null) {
+        const modal = document.getElementById('teamModal');
+        const form = document.getElementById('teamForm');
+        form.reset();
+
+        if (memberId) {
+            const m = teamMembers.find(x => x.id === memberId);
+            if (m) {
+                document.getElementById('memberIdInput').value = m.id;
+                document.getElementById('memberNameInput').value = m.name;
+                document.getElementById('memberRoleInput').value = m.role;
+                document.getElementById('memberEmailInput').value = m.email;
+            }
+        } else {
+            document.getElementById('memberIdInput').value = '';
+        }
+
+        modal.classList.remove('hidden');
+    }
+
+    document.getElementById('teamForm')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const id = document.getElementById('memberIdInput').value;
+        const name = document.getElementById('memberNameInput').value.trim();
+        const role = document.getElementById('memberRoleInput').value.trim();
+        const email = document.getElementById('memberEmailInput').value.trim();
+
+        if (id) {
+            const m = teamMembers.find(x => x.id === id);
+            if (m) { m.name = name; m.role = role; m.email = email; }
+            showToast('Member updated', 'success');
+        } else {
+            teamMembers.push({ id: 'mem-' + Date.now(), name, role, email });
+            showToast('Member added', 'success');
+        }
+
+        saveState();
+        renderAllViews();
+        closeModals();
+    });
+
+    
+    function renderCalendar() {
+        const grid = document.getElementById('calendarDaysGrid');
+        const title = document.getElementById('calendarMonthYear');
+        if (!grid || !title) return;
+
+        const year = currentCalendarDate.getFullYear();
+        const month = currentCalendarDate.getMonth();
+
+        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        title.textContent = `${monthNames[month]} ${year}`;
+
+        const firstDay = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+        let daysHTML = '';
+
+        
+        for (let i = 0; i < firstDay; i++) {
+            daysHTML += '<div class="cal-day empty"></div>';
+        }
+
+        const todayStr = new Date().toISOString().split('T')[0];
+
+        for (let day = 1; day <= daysInMonth; day++) {
+            const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+            const dayTasks = tasks.filter(t => t.dueDate === dateStr);
+
+            const isToday = dateStr === todayStr;
+            const isActive = dateStr === selectedCalendarDay;
+
+            daysHTML += `
+                <div class="cal-day ${isToday ? 'today' : ''} ${isActive ? 'active' : ''}" data-date="${dateStr}">
+                    <span>${day}</span>
+                    ${dayTasks.length > 0 ? `<div class="cal-day-dot"></div>` : ''}
+                </div>
+            `;
+        }
+
 
 
