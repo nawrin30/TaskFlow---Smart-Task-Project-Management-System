@@ -483,3 +483,20 @@ hr {
     margin-bottom: 1.25rem;
 }
 
+.btn {
+    padding: 0.6rem 1.2rem;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    font-size: 0.875rem;
+    cursor: pointer;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: var(--transition);
+}
+
+.btn-primary { background: var(--primary); color: var(--text-white); }
+.btn-primary:hover { background: var(--primary-hover); }
+
+.btn-secondary { background: var(--bg-main); color: var(--text-main); border: 1px solid var(--border-color); }
