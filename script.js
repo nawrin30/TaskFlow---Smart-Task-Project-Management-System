@@ -117,5 +117,77 @@
             });
         });
 
+        window.addEventListener('hashchange', () => {
+            const hash = window.location.hash.replace('#', '');
+            if (hash) switchView(hash);
+        });
+    }
+
+    function switchView(viewId) {
+        const views = document.querySelectorAll('.view-section');
+        views.forEach(v => v.classList.remove('active'));
+
+        const target = document.getElementById(`${viewId}-view`);
+        if (target) {
+            target.classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        document.querySelectorAll('[data-view]').forEach(item => {
+            item.classList.toggle('active', item.getAttribute('data-view') === viewId);
+        });
+        document.getElementById('sidebar').classList.remove('mobile-open');
+
+        if (viewId === 'analytics') renderAnalyticsCharts();
+        if (viewId === 'calendar') renderCalendar();
+
+        if (window.lucide) lucide.createIcons();
+    }
+
+    function renderAllViews() {
+        updateUserProfileUI();
+        updateDashboardStats();
+        renderRecentDashboardTasks();
+        renderDashboardProjects();
+        renderTasks();
+        renderProjects();
+        renderTeam();
+        renderNotifications();
+        renderCalendar();
+        renderAnalyticsMetrics();
+    }
+
+
+    function createNotification(title) {
+        const notif = {
+            id: 'notif-' + Date.now(),
+            title: title,
+            time: 'Just now',
+            read: false
+        };
+        notifications.unshift(notif);
+        saveState();
+        renderNotifications();
+    }
+
+    function renderNotifications() {
+        const unreadCount = notifications.filter(n => !n.read).length;
+        document.querySelectorAll('.notification-badge-count').forEach(badge => {
+            badge.textContent = unreadCount;
+            badge.classList.toggle('hidden', unreadCount === 0);
+        });
+
+        
+        const miniList = document.getElementById('dropdownNotificationList');
+        if (miniList) {
+            miniList.innerHTML = notifications.slice(0, 5).map(n => `
+                <div class="dropdown-item ${n.read ? '' : 'unread'}" style="${n.read ? '' : 'font-weight:bold; background:var(--primary-light);'}">
+                    <div>
+                        <p style="margin:0; font-size:0.85rem;">${escapeHTML(n.title)}</p>
+                        <small style="color:var(--text-muted);">${n.time}</small>
+                    </div>
+                </div>
+            `).join('') || '<div style="padding:1rem; text-align:center;">No notifications</div>';
+        }
+
 
 
