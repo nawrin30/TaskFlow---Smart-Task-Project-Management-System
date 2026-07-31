@@ -753,3 +753,18 @@ hr {
 .modal-body { padding: 1.5rem; }
 .modal-footer { padding: 1.25rem 1.5rem; border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; gap: 0.75rem; }
 
+.subtasks-section { margin-top: 1.5rem; }
+.subtasks-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
+.subtask-input-row { display: flex; gap: 0.5rem; margin: 1rem 0; }
+.subtask-item { display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--border-color); }
+
+.toast-container { position: fixed; bottom: 2rem; right: 2rem; display: flex; flex-direction: column; gap: 0.75rem; z-index: 2000; }
+.toast { background: var(--bg-surface); color: var(--text-main); border: 1px solid var(--border-color); border-left: 4px solid var(--primary); padding: 1rem 1.25rem; border-radius: var(--radius-md); box-shadow: var(--shadow-lg); display: flex; align-items: center; gap: 0.75rem; animation: toastIn 0.3s ease; }
+.toast.success { border-left-color: var(--color-completed); }
+.toast.danger { border-left-color: var(--priority-high); }
+
+@keyframes toastIn { from { opacity: 0; transform: translateX(100%); } to { opacity: 1; transform: translateX(0); } }
+
+.profile-layout { display: grid; grid-template-columns: 1fr 2fr; gap: 1.5rem; }
+.profile-header-main { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
+.profile-stats { display: flex; justify-content: space-around; width: 100%; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color); }
