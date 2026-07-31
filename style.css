@@ -443,3 +443,43 @@ hr {
     box-shadow: var(--shadow-sm);
 }
 
+.stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-white);
+}
+
+.bg-purple { background: var(--primary); }
+.bg-green { background: var(--color-completed); }
+.bg-blue { background: var(--color-progress); }
+.bg-red { background: var(--color-overdue); }
+
+.stat-value { font-size: 1.5rem; }
+.stat-label { font-size: 0.8rem; color: var(--text-muted); }
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 1.5rem;
+}
+
+.card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 1.5rem;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+}
+
