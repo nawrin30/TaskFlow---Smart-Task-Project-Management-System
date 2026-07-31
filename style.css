@@ -768,3 +768,26 @@ hr {
 .profile-layout { display: grid; grid-template-columns: 1fr 2fr; gap: 1.5rem; }
 .profile-header-main { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
 .profile-stats { display: flex; justify-content: space-around; width: 100%; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color); }
+.mobile-only { display: none; }
+.mobile-bottom-nav { display: none; }
+
+@media (max-width: 900px) {
+    .sidebar { transform: translateX(-100%); width: var(--sidebar-width) !important; }
+    .sidebar.mobile-open { transform: translateX(0); }
+    .main-wrapper { margin-left: 0 !important; }
+    .mobile-only { display: flex; }
+    .dashboard-grid, .profile-layout { grid-template-columns: 1fr; }
+    
+    .mobile-bottom-nav {
+        display: flex;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 60px;
+        background: var(--bg-surface);
+        border-top: 1px solid var(--border-color);
+        justify-content: space-around;
+        align-items: center;
+        z-index: 100;
+    }
