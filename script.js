@@ -52,5 +52,12 @@
                 { id: 'st-3', title: 'Write Data Persistence Handlers', completed: true }
             ]
         }
-    ];
+    ];   
+     const DEFAULT_USER = {
+        name: 'Nawrin',
+        role: 'Senior Lead Engineer',
+        email: 'nawrintarannum30@gmail.com'
+    };
+
+
 
