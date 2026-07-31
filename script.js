@@ -238,6 +238,96 @@
         container.innerHTML = recent.map(t => createTaskCardHTML(t)).join('');
         attachTaskCardListeners(container);
     }
+    function renderDashboardProjects() {
+        const container = document.getElementById('dashboardProjectsList');
+        if (!container) return;
+
+        container.innerHTML = projects.slice(0, 3).map(p => {
+            const pTasks = tasks.filter(t => t.projectId === p.id);
+            const pCompleted = pTasks.filter(t => t.status === 'Completed').length;
+            const progress = pTasks.length ? Math.round((pCompleted / pTasks.length) * 100) : 0;
+
+            return `
+                <div style="margin-bottom:1rem;">
+                    <div style="display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:0.25rem;">
+                        <strong>${escapeHTML(p.name)}</strong>
+                        <span>${progress}%</span>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar-fill" style="width: ${progress}%;"></div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    
+    function renderTasks() {
+        const container = document.getElementById('tasksContainer');
+        if (!container) return;
+        const searchVal = (document.getElementById('globalSearchInput')?.value || '').toLowerCase();
+        const filterStatus = document.getElementById('filterStatus')?.value || 'all';
+        const filterPriority = document.getElementById('filterPriority')?.value || 'all';
+        const filterProj = document.getElementById('filterProject')?.value || 'all';
+        const sortBy = document.getElementById('sortBy')?.value || 'newest';
+
+        const now = new Date().toISOString().split('T')[0];
+
+        let filtered = tasks.filter(t => {
+            const matchesSearch = t.title.toLowerCase().includes(searchVal) || t.description.toLowerCase().includes(searchVal);
+            
+            let matchesStatus = true;
+            if (filterStatus === 'Overdue') {
+                matchesStatus = t.status !== 'Completed' && t.dueDate < now;
+            } else if (filterStatus !== 'all') {
+                matchesStatus = t.status === filterStatus;
+            }
+
+            const matchesPriority = filterPriority === 'all' || t.priority === filterPriority;
+            const matchesProject = filterProj === 'all' || t.projectId === filterProj;
+
+            return matchesSearch && matchesStatus && matchesPriority && matchesProject;
+        });
+        filtered.sort((a, b) => {
+            if (sortBy === 'newest') return b.id.localeCompare(a.id);
+            if (sortBy === 'oldest') return a.id.localeCompare(b.id);
+            if (sortBy === 'dueDate') return a.dueDate.localeCompare(b.dueDate);
+            if (sortBy === 'priority') {
+                const map = { High: 3, Medium: 2, Low: 1 };
+                return map[b.priority] - map[a.priority];
+            }
+            return 0;
+        });
+
+        if (filtered.length === 0) {
+            container.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:3rem; color:var(--text-muted);">No tasks match your criteria.</div>';
+            return;
+        }
+
+        container.innerHTML = filtered.map(t => createTaskCardHTML(t)).join('');
+        attachTaskCardListeners(container);
+    }
+
+    function createTaskCardHTML(task) {
+        const isCompleted = task.status === 'Completed';
+        const now = new Date().toISOString().split('T')[0];
+        const isOverdue = task.status !== 'Completed' && task.dueDate < now;
+
+        const subtaskTotal = task.subtasks ? task.subtasks.length : 0;
+        const subtaskDone = task.subtasks ? task.subtasks.filter(s => s.completed).length : 0;
+        const progress = subtaskTotal ? Math.round((subtaskDone / subtaskTotal) * 100) : (isCompleted ? 100 : 0);
+
+        const project = projects.find(p => p.id === task.projectId);
+
+        return `
+            <div class="task-card" data-id="${task.id}">
+                <div class="task-card-header">
+                    <div class="task-checkbox-title">
+                        <input type="checkbox" class="task-toggle-checkbox" ${isCompleted ? 'checked' : ''}>
+                        <h4 class="${isCompleted ? 'completed' : ''}">${escapeHTML(task.title)}</h4>
+                    </div>
+                </div>
+
 
 
 
