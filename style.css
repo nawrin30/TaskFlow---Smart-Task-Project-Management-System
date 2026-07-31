@@ -179,3 +179,33 @@ hr {
     color: var(--text-main);
     transition: var(--transition);
 }
+.user-card-link:hover {
+    background-color: var(--primary-light);
+}
+
+.user-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: var(--radius-full);
+    background: var(--primary);
+    color: var(--text-white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+
+.user-avatar.mini { width: 32px; height: 32px; font-size: 0.8rem; }
+.user-avatar.huge { width: 72px; height: 72px; font-size: 1.8rem; }
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.user-name { font-weight: 700; font-size: 0.875rem; }
+.user-role { font-size: 0.75rem; color: var(--text-muted); }
+
