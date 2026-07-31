@@ -625,3 +625,41 @@ hr {
     flex-wrap: wrap;
 }
 
+.badge-priority-high { background: rgba(239, 68, 68, 0.15); color: var(--priority-high); }
+.badge-priority-medium { background: rgba(245, 158, 11, 0.15); color: var(--priority-med); }
+.badge-priority-low { background: rgba(16, 185, 129, 0.15); color: var(--priority-low); }
+
+.badge-status-completed { background: rgba(22, 163, 74, 0.15); color: var(--color-completed); }
+.badge-status-progress { background: rgba(37, 99, 235, 0.15); color: var(--color-progress); }
+.badge-status-todo { background: rgba(100, 116, 139, 0.15); color: var(--color-todo); }
+.badge-status-overdue { background: rgba(220, 38, 38, 0.15); color: var(--color-overdue); }
+
+.task-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--border-color);
+    padding-top: 0.75rem;
+    margin-top: auto;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.task-actions { display: flex; gap: 0.25rem; }
+
+
+.progress-bar-container {
+    height: 6px;
+    background: var(--border-color);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+    width: 100%;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: var(--primary);
+    border-radius: var(--radius-full);
+    transition: width 0.3s ease;
+}
+
