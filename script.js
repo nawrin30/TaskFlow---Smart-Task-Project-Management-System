@@ -327,6 +327,101 @@
                         <h4 class="${isCompleted ? 'completed' : ''}">${escapeHTML(task.title)}</h4>
                     </div>
                 </div>
+                ${task.description ? `<p class="task-desc">${escapeHTML(task.description)}</p>` : ''}
+
+                <div class="task-badges">
+                    <span class="badge badge-priority-${task.priority.toLowerCase()}">${task.priority}</span>
+                    <span class="badge badge-status-${isOverdue ? 'overdue' : (task.status === 'In Progress' ? 'progress' : task.status.toLowerCase().replace(' ', ''))}">
+                        ${isOverdue ? 'Overdue' : task.status}
+                    </span>
+                    ${project ? `<span class="badge" style="background:var(--primary-light); color:var(--primary);">${escapeHTML(project.name)}</span>` : ''}
+                </div>
+
+                ${subtaskTotal > 0 ? `
+                    <div style="margin-top: 0.25rem;">
+                        <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--text-muted); margin-bottom:2px;">
+                            <span>Subtasks</span>
+                            <span>${subtaskDone}/${subtaskTotal}</span>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar-fill" style="width: ${progress}%;"></div>
+                        </div>
+                    </div>
+                ` : ''}
+
+                <div class="task-card-footer">
+                    <span><i data-lucide="calendar" style="width:14px; inline-size:14px;"></i> ${task.dueDate}</span>
+                    <div class="task-actions">
+                        <button class="icon-btn view-task-btn" title="View Details"><i data-lucide="eye"></i></button>
+                        <button class="icon-btn edit-task-btn" title="Edit Task"><i data-lucide="edit-3"></i></button>
+                        <button class="icon-btn delete-task-btn" title="Delete Task"><i data-lucide="trash-2"></i></button>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    function attachTaskCardListeners(container) {
+        container.querySelectorAll('.task-card').forEach(card => {
+            const id = card.getAttribute('data-id');
+
+           
+            card.querySelector('.task-toggle-checkbox')?.addEventListener('change', (e) => {
+                const t = tasks.find(x => x.id === id);
+                if (t) {
+                    t.status = e.target.checked ? 'Completed' : 'In Progress';
+                    if (t.subtasks) t.subtasks.forEach(s => s.completed = e.target.checked);
+                    saveState();
+                    renderAllViews();
+                    showToast(`Task marked as ${t.status}`, 'success');
+                }
+            });
+
+           
+            card.querySelector('.view-task-btn')?.addEventListener('click', () => openTaskDetailsModal(id));
+
+           
+            card.querySelector('.edit-task-btn')?.addEventListener('click', () => openTaskFormModal(id));
+
+            
+            card.querySelector('.delete-task-btn')?.addEventListener('click', () => {
+                openConfirmModal('Delete Task', 'Are you sure you want to delete this task?', () => {
+                    tasks = tasks.filter(x => x.id !== id);
+                    saveState();
+                    renderAllViews();
+                    showToast('Task deleted', 'danger');
+                });
+            });
+        });
+
+        if (window.lucide) lucide.createIcons();
+    }
+
+    
+    function openTaskFormModal(taskId = null) {
+        const modal = document.getElementById('taskModal');
+        const form = document.getElementById('taskForm');
+        form.reset();
+
+        populateSelectDropdowns();
+
+        if (taskId) {
+            const t = tasks.find(x => x.id === taskId);
+            if (t) {
+                document.getElementById('taskModalTitle').textContent = 'Edit Task';
+                document.getElementById('taskIdInput').value = t.id;
+                document.getElementById('taskTitleInput').value = t.title;
+                document.getElementById('taskDescInput').value = t.description || '';
+                document.getElementById('taskProjectSelect').value = t.projectId || '';
+                document.getElementById('taskCategoryInput').value = t.category || '';
+                document.getElementById('taskPrioritySelect').value = t.priority;
+                document.getElementById('taskStatusSelect').value = t.status;
+                document.getElementById('taskStartDateInput').value = t.startDate || '';
+                document.getElementById('taskDueDateInput').value = t.dueDate;
+                document.getElementById('taskStartTimeInput').value = t.startTime || '';
+                document.getElementById('taskEndTimeInput').value = t.endTime || '';
+                document.getElementById('taskLinkInput').value = t.link || '';
+            }
 
 
 
