@@ -423,6 +423,134 @@
                 document.getElementById('taskLinkInput').value = t.link || '';
             }
 
+        } else {
+            document.getElementById('taskModalTitle').textContent = 'Create New Task';
+            document.getElementById('taskIdInput').value = '';
+        }
+
+        modal.classList.remove('hidden');
+    }
+
+    document.getElementById('taskForm')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const id = document.getElementById('taskIdInput').value;
+        const title = document.getElementById('taskTitleInput').value.trim();
+        const dueDate = document.getElementById('taskDueDateInput').value;
+
+        if (!title || !dueDate) {
+            showToast('Please fill in required fields', 'danger');
+            return;
+        }
+
+        const assignedSelect = document.getElementById('taskAssignedSelect');
+        const selectedMembers = Array.from(assignedSelect.selectedOptions).map(opt => opt.value);
+
+        if (id) {
+         
+            const t = tasks.find(x => x.id === id);
+            if (t) {
+                t.title = title;
+                t.description = document.getElementById('taskDescInput').value;
+                t.projectId = document.getElementById('taskProjectSelect').value;
+                t.category = document.getElementById('taskCategoryInput').value;
+                t.priority = document.getElementById('taskPrioritySelect').value;
+                t.status = document.getElementById('taskStatusSelect').value;
+                t.startDate = document.getElementById('taskStartDateInput').value;
+                t.dueDate = dueDate;
+                t.startTime = document.getElementById('taskStartTimeInput').value;
+                t.endTime = document.getElementById('taskEndTimeInput').value;
+                t.assignedMembers = selectedMembers;
+                t.link = document.getElementById('taskLinkInput').value;
+            }
+            createNotification(`Task updated: "${title}"`);
+            showToast('Task updated successfully', 'success');
+        } else {
+            
+            const newTask = {
+                id: 'task-' + Date.now(),
+                title,
+                description: document.getElementById('taskDescInput').value,
+                projectId: document.getElementById('taskProjectSelect').value,
+                category: document.getElementById('taskCategoryInput').value,
+                priority: document.getElementById('taskPrioritySelect').value,
+                status: document.getElementById('taskStatusSelect').value,
+                startDate: document.getElementById('taskStartDateInput').value,
+                dueDate,
+                startTime: document.getElementById('taskStartTimeInput').value,
+                endTime: document.getElementById('taskEndTimeInput').value,
+                assignedMembers: selectedMembers,
+                link: document.getElementById('taskLinkInput').value,
+                subtasks: []
+            };
+            tasks.unshift(newTask);
+            createNotification(`New task created: "${title}"`);
+            showToast('Task created successfully', 'success');
+        }
+
+        saveState();
+        renderAllViews();
+        closeModals();
+    });
+
+   
+    function openTaskDetailsModal(taskId) {
+        const t = tasks.find(x => x.id === taskId);
+        if (!t) return;
+        activeTaskForDetails = t;
+
+        document.getElementById('detailTaskTitle').textContent = t.title;
+        document.getElementById('detailTaskDesc').textContent = t.description || 'No description provided.';
+        document.getElementById('detailPriorityBadge').textContent = t.priority;
+        document.getElementById('detailStatusBadge').textContent = t.status;
+
+        const proj = projects.find(p => p.id === t.projectId);
+        document.getElementById('detailProject').textContent = proj ? proj.name : 'None';
+        document.getElementById('detailCategory').textContent = t.category || 'General';
+        document.getElementById('detailStartDate').textContent = t.startDate || 'N/A';
+        document.getElementById('detailDueDate').textContent = t.dueDate;
+        document.getElementById('detailTimeWindow').textContent = (t.startTime && t.endTime) ? `${t.startTime} - ${t.endTime}` : 'All Day';
+
+        const linkEl = document.getElementById('detailLink');
+        if (t.link) {
+            linkEl.innerHTML = `<a href="${escapeHTML(t.link)}" target="_blank" rel="noopener">Open Link <i data-lucide="external-link"></i></a>`;
+        } else {
+            linkEl.textContent = 'No link attached.';
+        }
+
+        
+        const assigneesContainer = document.getElementById('detailAssignedList');
+        assigneesContainer.innerHTML = (t.assignedMembers || []).map(mId => {
+            const m = teamMembers.find(x => x.id === mId);
+            return m ? `<span class="badge" style="background:var(--primary-light); color:var(--primary);">${escapeHTML(m.name)}</span>` : '';
+        }).join('') || 'None';
+
+        renderSubtasksUI();
+        document.getElementById('taskDetailModal').classList.remove('hidden');
+        if (window.lucide) lucide.createIcons();
+    }
+
+    function renderSubtasksUI() {
+        if (!activeTaskForDetails) return;
+        const subtasks = activeTaskForDetails.subtasks || [];
+        const total = subtasks.length;
+        const completed = subtasks.filter(s => s.completed).length;
+        const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
+
+        document.getElementById('subtaskProgressText').textContent = `${completed}/${total}`;
+        document.getElementById('subtaskPercentText').textContent = `${percent}%`;
+        document.getElementById('subtaskProgressBar').style.width = `${percent}%`;
+
+        const list = document.getElementById('subtaskList');
+        list.innerHTML = subtasks.map(s => `
+            <div class="subtask-item">
+                <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer;">
+                    <input type="checkbox" class="subtask-checkbox" data-id="${s.id}" ${s.completed ? 'checked' : ''}>
+                    <span style="${s.completed ? 'text-decoration:line-through; color:var(--text-muted);' : ''}">${escapeHTML(s.title)}</span>
+                </label>
+                <button class="icon-btn delete-subtask-btn" data-id="${s.id}"><i data-lucide="trash-2"></i></button>
+            </div>
+        `).join('') || '<p style="color:var(--text-muted); font-size:0.85rem; padding:0.5rem 0;">No subtasks added yet.</p>';
+
 
 
 
