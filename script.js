@@ -553,5 +553,131 @@
 
 
 
+        list.querySelectorAll('.subtask-checkbox').forEach(chk => {
+            chk.addEventListener('change', (e) => {
+                const sId = chk.getAttribute('data-id');
+                const sub = activeTaskForDetails.subtasks.find(x => x.id === sId);
+                if (sub) {
+                    sub.completed = e.target.checked;
+                    
+                    
+                    const allDone = activeTaskForDetails.subtasks.every(x => x.completed);
+                    if (allDone && activeTaskForDetails.subtasks.length > 0) {
+                        activeTaskForDetails.status = 'Completed';
+                    }
+
+                    saveState();
+                    renderSubtasksUI();
+                    renderAllViews();
+                }
+            });
+        });
+
+        list.querySelectorAll('.delete-subtask-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const sId = btn.getAttribute('data-id');
+                activeTaskForDetails.subtasks = activeTaskForDetails.subtasks.filter(x => x.id !== sId);
+                saveState();
+                renderSubtasksUI();
+                renderAllViews();
+            });
+        });
+
+        if (window.lucide) lucide.createIcons();
+    }
+
+    document.getElementById('addSubtaskForm')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const input = document.getElementById('subtaskTitleInput');
+        const title = input.value.trim();
+        if (!title || !activeTaskForDetails) return;
+
+        if (!activeTaskForDetails.subtasks) activeTaskForDetails.subtasks = [];
+        activeTaskForDetails.subtasks.push({
+            id: 'st-' + Date.now(),
+            title,
+            completed: false
+        });
+
+        input.value = '';
+        saveState();
+        renderSubtasksUI();
+        renderAllViews();
+    });
+
+    
+    function renderProjects() {
+        const container = document.getElementById('projectsContainer');
+        if (!container) return;
+
+        container.innerHTML = projects.map(p => {
+            const pTasks = tasks.filter(t => t.projectId === p.id);
+            const pCompleted = pTasks.filter(t => t.status === 'Completed').length;
+            const progress = pTasks.length ? Math.round((pCompleted / pTasks.length) * 100) : 0;
+
+            return `
+                <div class="project-card">
+                    <div class="card-header">
+                        <h3>${escapeHTML(p.name)}</h3>
+                        <div class="task-actions">
+                            <button class="icon-btn edit-proj-btn" data-id="${p.id}"><i data-lucide="edit-3"></i></button>
+                            <button class="icon-btn delete-proj-btn" data-id="${p.id}"><i data-lucide="trash-2"></i></button>
+                        </div>
+                    </div>
+                    <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1rem;">${escapeHTML(p.description || 'No description')}</p>
+                    <div style="margin-bottom:0.75rem;">
+                        <div style="display:flex; justify-content:space-between; font-size:0.8rem; margin-bottom:0.25rem;">
+                            <span>Progress</span>
+                            <span>${progress}% (${pCompleted}/${pTasks.length} Tasks)</span>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar-fill" style="width:${progress}%;"></div>
+                        </div>
+                    </div>
+                    <small style="color:var(--text-muted);"><i data-lucide="calendar"></i> Deadline: ${p.deadline}</small>
+                </div>
+            `;
+        }).join('');
+
+        container.querySelectorAll('.edit-proj-btn').forEach(btn => {
+            btn.addEventListener('click', () => openProjectModal(btn.getAttribute('data-id')));
+        });
+
+        container.querySelectorAll('.delete-proj-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const id = btn.getAttribute('data-id');
+                openConfirmModal('Delete Project', 'Are you sure? Tasks assigned to this project will remain intact.', () => {
+                    projects = projects.filter(x => x.id !== id);
+                    saveState();
+                    renderAllViews();
+                    showToast('Project deleted', 'danger');
+                });
+            });
+        });
+
+        if (window.lucide) lucide.createIcons();
+    }
+
+    function openProjectModal(projId = null) {
+        const modal = document.getElementById('projectModal');
+        const form = document.getElementById('projectForm');
+        form.reset();
+
+        if (projId) {
+            const p = projects.find(x => x.id === projId);
+            if (p) {
+                document.getElementById('projectIdInput').value = p.id;
+                document.getElementById('projectNameInput').value = p.name;
+                document.getElementById('projectDescInput').value = p.description || '';
+                document.getElementById('projectDeadlineInput').value = p.deadline;
+            }
+        } else {
+            document.getElementById('projectIdInput').value = '';
+        }
+
+        modal.classList.remove('hidden');
+    }
+
+
 
 
