@@ -188,6 +188,57 @@
                 </div>
             `).join('') || '<div style="padding:1rem; text-align:center;">No notifications</div>';
         }
+        const fullList = document.getElementById('fullNotificationList');
+        if (fullList) {
+            fullList.innerHTML = notifications.map(n => `
+                <div class="subtask-item" style="padding:1rem; ${n.read ? 'opacity:0.7;' : 'font-weight:bold;'}">
+                    <div>
+                        <h4>${escapeHTML(n.title)}</h4>
+                        <small style="color:var(--text-muted);">${n.time}</small>
+                    </div>
+                    ${!n.read ? `<button class="btn btn-secondary mark-read-btn" data-id="${n.id}">Mark Read</button>` : ''}
+                </div>
+            `).join('') || '<div style="padding:2rem; text-align:center;">No notifications found</div>';
+
+            fullList.querySelectorAll('.mark-read-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const id = btn.getAttribute('data-id');
+                    const target = notifications.find(x => x.id === id);
+                    if (target) target.read = true;
+                    saveState();
+                    renderNotifications();
+                });
+            });
+        }
+    }
+    function updateDashboardStats() {
+        const total = tasks.length;
+        const completed = tasks.filter(t => t.status === 'Completed').length;
+        const inProgress = tasks.filter(t => t.status === 'In Progress').length;
+        
+        const now = new Date().toISOString().split('T')[0];
+        const overdue = tasks.filter(t => t.status !== 'Completed' && t.dueDate < now).length;
+
+        document.getElementById('statTotalTasks').textContent = total;
+        document.getElementById('statCompletedTasks').textContent = completed;
+        document.getElementById('statInProgressTasks').textContent = inProgress;
+        document.getElementById('statOverdueTasks').textContent = overdue;
+    }
+
+    function renderRecentDashboardTasks() {
+        const container = document.getElementById('dashboardRecentTasksList');
+        if (!container) return;
+
+        const recent = tasks.slice(0, 4);
+        if (recent.length === 0) {
+            container.innerHTML = '<p style="color:var(--text-muted); text-align:center;">No tasks available.</p>';
+            return;
+        }
+
+        container.innerHTML = recent.map(t => createTaskCardHTML(t)).join('');
+        attachTaskCardListeners(container);
+    }
+
 
 
 
